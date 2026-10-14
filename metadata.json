@@ -1,0 +1,6 @@
+{
+  "name": "CourtNet Kentucky Case Search",
+  "description": "Black and light blue court record lookup portal querying Kentucky Court of Justice CourtNet with Last Name, First Name, and Date of Birth.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
