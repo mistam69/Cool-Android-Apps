@@ -58,3 +58,12 @@ export interface SearchResponse {
   records: CourtCase[];
   error?: string;
 }
+
+export interface SearchHistoryItem {
+  id: string;
+  lastName: string;
+  firstName: string;
+  dob: string;
+  timestamp: number;
+  resultsCount?: number;
+}

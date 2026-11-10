@@ -1,14 +1,22 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Calendar as CalendarIcon, Search, CheckCircle2, AlertCircle, RotateCcw, Sparkles } from 'lucide-react';
+import { Calendar as CalendarIcon, Search, CheckCircle2, AlertCircle, RotateCcw, Sparkles, History } from 'lucide-react';
 import { CalendarPicker } from './CalendarPicker.tsx';
 
 interface SearchFormProps {
   onSearch: (params: { lastName: string; firstName: string; dob: string; sessionCookie?: string }) => void;
   isLoading: boolean;
   initialValues?: { lastName: string; firstName: string; dob: string };
+  onOpenHistory?: () => void;
+  historyCount?: number;
 }
 
-export const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading, initialValues }) => {
+export const SearchForm: React.FC<SearchFormProps> = ({ 
+  onSearch, 
+  isLoading, 
+  initialValues,
+  onOpenHistory,
+  historyCount = 0
+}) => {
   const [lastName, setLastName] = useState(initialValues?.lastName || '');
   const [firstName, setFirstName] = useState(initialValues?.firstName || '');
   const [dob, setDob] = useState(initialValues?.dob || '');
@@ -22,6 +30,20 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading, ini
     firstName: false,
     dob: false,
   });
+
+  // Sync inputs whenever external initialValues changes (e.g. from history re-run)
+  useEffect(() => {
+    if (initialValues) {
+      setLastName(initialValues.lastName || '');
+      setFirstName(initialValues.firstName || '');
+      setDob(initialValues.dob || '');
+      setTouched({
+        lastName: Boolean(initialValues.lastName),
+        firstName: Boolean(initialValues.firstName),
+        dob: Boolean(initialValues.dob),
+      });
+    }
+  }, [initialValues?.lastName, initialValues?.firstName, initialValues?.dob]);
 
   const calendarContainerRef = useRef<HTMLDivElement>(null);
 
@@ -141,8 +163,24 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading, ini
           </p>
         </div>
 
-        {/* Quick sample test triggers */}
+        {/* Quick sample test triggers & History shortcut */}
         <div className="flex items-center gap-2 flex-wrap">
+          {onOpenHistory && (
+            <button
+              type="button"
+              onClick={onOpenHistory}
+              className="px-2.5 py-1 text-xs rounded-lg bg-black border border-sky-800 text-sky-300 hover:border-sky-400 hover:bg-neutral-950 transition-colors whitespace-nowrap inline-flex items-center gap-1.5"
+            >
+              <History className="w-3.5 h-3.5 text-sky-400" />
+              <span>History</span>
+              {historyCount > 0 && (
+                <span className="text-[10px] px-1.5 py-0.2 rounded bg-sky-950 text-sky-200 border border-sky-700 font-mono">
+                  {historyCount}
+                </span>
+              )}
+            </button>
+          )}
+
           <span className="text-[11px] text-sky-500 font-medium">Quick fill:</span>
           <button
             type="button"

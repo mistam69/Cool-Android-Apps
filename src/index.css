@@ -38,3 +38,28 @@
   font-family: 'JetBrains Mono', monospace;
   font-variant-numeric: tabular-nums;
 }
+
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  /* Hide navigation, sidebar, forms, and background elements when printing */
+  header,
+  #search-section,
+  #search-history-drawer,
+  nav,
+  footer,
+  .print\\:hidden {
+    display: none !important;
+  }
+
+  /* Optimize printable report */
+  #courtnet-printable-report {
+    display: block !important;
+    color: #000000 !important;
+    background: #ffffff !important;
+    padding: 0 !important;
+  }
+}

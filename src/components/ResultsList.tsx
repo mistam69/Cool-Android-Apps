@@ -11,10 +11,12 @@ import {
   Clock, 
   ShieldCheck, 
   ArrowUpDown,
-  Filter
+  Filter,
+  Printer
 } from 'lucide-react';
 import { CourtCase, CourtNetGatewayInfo } from '../types.ts';
 import { CaseDetailModal } from './CaseDetailModal.tsx';
+import { PrintSummaryReportModal } from './PrintSummaryReportModal.tsx';
 
 interface ResultsListProps {
   records: CourtCase[];
@@ -33,6 +35,7 @@ export const ResultsList: React.FC<ResultsListProps> = ({
   const [filterType, setFilterType] = useState<string>('ALL');
   const [sortBy, setSortBy] = useState<'date_desc' | 'date_asc' | 'case_num'>('date_desc');
   const [showGatewayDetails, setShowGatewayDetails] = useState<boolean>(false);
+  const [printModalOpen, setPrintModalOpen] = useState<boolean>(false);
 
   const handleCopy = (id: string, text: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -99,6 +102,18 @@ export const ResultsList: React.FC<ResultsListProps> = ({
             <span>DOB: <strong className="text-sky-200 font-mono">{query.dob}</strong></span>
             <span>·</span>
             <span>Found: <strong className="text-sky-200">{records.length} {records.length === 1 ? 'Case' : 'Cases'}</strong></span>
+          </div>
+
+          <div className="mt-3 flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setPrintModalOpen(true)}
+              className="px-3.5 py-1.5 rounded-xl bg-black border-2 border-sky-400 text-sky-200 hover:border-sky-300 hover:text-sky-100 hover:bg-neutral-950 shadow-[0_0_15px_rgba(56,189,248,0.25)] text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 transition-all cursor-pointer"
+              title="Print screen in a summarized detailed report"
+            >
+              <Printer className="w-3.5 h-3.5 text-sky-400" />
+              <span>Print Detailed Report</span>
+            </button>
           </div>
         </div>
 
@@ -347,6 +362,14 @@ export const ResultsList: React.FC<ResultsListProps> = ({
           <span>Scroll container contains all returned results</span>
         </div>
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setPrintModalOpen(true)}
+            className="px-3 py-1.5 bg-black border border-sky-700 text-sky-200 hover:text-sky-100 hover:border-sky-400 rounded-lg inline-flex items-center gap-1.5 transition-colors font-medium cursor-pointer"
+          >
+            <Printer className="w-3.5 h-3.5 text-sky-400" />
+            <span>Print Report</span>
+          </button>
           <a
             href="https://kcoj.kycourts.net/CourtNet/Search/Index"
             target="_blank"
@@ -367,6 +390,15 @@ export const ResultsList: React.FC<ResultsListProps> = ({
           onClose={() => setSelectedCase(null)}
         />
       )}
+
+      {/* Print Summary Report Modal */}
+      <PrintSummaryReportModal
+        isOpen={printModalOpen}
+        onClose={() => setPrintModalOpen(false)}
+        records={records}
+        query={query}
+        gatewayInfo={gatewayInfo}
+      />
     </div>
   );
 };
